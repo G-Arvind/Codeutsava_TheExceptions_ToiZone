@@ -91,6 +91,7 @@
                     android:textSize="15dp" />
 
                 <at.markushi.ui.CircleButton
+                    android:onClick="sendcomplain"
                     android:id="@+id/complain"
                     android:layout_width="60dip"
                     android:layout_height="60dip"
@@ -101,6 +102,7 @@
                     app:cb_pressedRingWidth="8dip" />
 
                 <TextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="215dp"

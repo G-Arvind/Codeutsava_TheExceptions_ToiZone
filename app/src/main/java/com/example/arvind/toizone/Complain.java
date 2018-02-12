@@ -1,6 +1,10 @@
 package com.example.arvind.toizone;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -13,12 +17,26 @@ public class Complain extends AppCompatActivity  {
     private EditText username;
     private EditText mailaccount;
     private Button buttonSend;
+    boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complain);
-
+        checkcon();
+        if (connected==false)
+        {
+            View parentLayout = findViewById(android.R.id.content);
+            Snackbar.make(parentLayout, "No Internet Connection", Snackbar.LENGTH_LONG)
+                    .setAction("CLOSE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            checkcon();
+                        }
+                    })
+                    .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                    .show();
+        }
 
 
         TextSubject = (EditText) findViewById(R.id.editTextSubject);
@@ -61,15 +79,31 @@ public class Complain extends AppCompatActivity  {
         String email="bheem.karthik007@gmail.com";
         String subject = TextSubject.getText().toString().trim();
         String message = TextMessage.getText().toString().trim();
-        String Name= username.getText().toString().trim();;
+        String Name= username.getText().toString().trim();
         String sender= mailaccount.getText().toString().trim();
+        if(!isEmailValid(sender))
+        {
+            mailaccount.setError("Invaild mail Id");
+        }
+        else {
+            SendMail sm = new SendMail(this, email, subject, message, Name, sender);
 
 
-
-        SendMail sm = new SendMail(this, email, subject, message,Name,sender);
-
-
-        sm.execute();
+            sm.execute();
+        }
+    }
+    public void checkcon(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
+    }
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
 }

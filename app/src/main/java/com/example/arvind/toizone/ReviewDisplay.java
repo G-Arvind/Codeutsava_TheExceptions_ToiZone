@@ -1,5 +1,9 @@
 package com.example.arvind.toizone;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +28,7 @@ import java.util.Map;
 public class ReviewDisplay extends AppCompatActivity {
 
     String link;
+    boolean connected = false;
 
     private RecyclerView recyclerView;
     private DatabaseReference myref;
@@ -33,6 +38,20 @@ public class ReviewDisplay extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_display);
+        checkcon();
+        if (connected==false)
+        {
+            View parentLayout = findViewById(android.R.id.content);
+            Snackbar.make(parentLayout, "No Internet Connection", Snackbar.LENGTH_LONG)
+                    .setAction("CLOSE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            checkcon();
+                        }
+                    })
+                    .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                    .show();
+        }
         link=getIntent().getExtras().getString("ptlink");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -119,6 +138,16 @@ public class ReviewDisplay extends AppCompatActivity {
             stardisp.setEnabled(false);
         }
 
+    }
+    public void checkcon(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
     }
 
 

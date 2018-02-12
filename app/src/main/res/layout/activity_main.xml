@@ -34,6 +34,7 @@
 
                 <TextView
                     android:id="@+id/ratdisp"
+                    android:textStyle="bold"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -356,33 +357,59 @@
 
 
             <android.support.v7.widget.CardView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/rate"
+                android:text="Ratings and Reviews"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/seer"
+                android:onClick="seerev"
+                android:layout_marginTop="30dp"
+                android:text="See Review"
+                android:textSize="17dp"
+                android:background="#D50000"
+                android:textColor="#ffffff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/addr"
+                android:onClick="addReview"
+                android:layout_marginTop="85dp"
+                android:text="Rate/Add Review"
+                android:textSize="17dp"
+                android:background="#D50000"
+                android:textColor="#ffffff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+        </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/rate"
-                    android:text="Ratings and Reviews"
+                    android:text="Register your visit"
                     android:textColor="#000000"
                     android:textStyle="bold"
                     android:textSize="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <Button
-                    android:id="@+id/seer"
+                    android:id="@+id/went"
                     android:onClick="seerev"
                     android:layout_marginTop="30dp"
-                    android:text="See Review"
-                    android:textSize="17dp"
-                    android:background="#D50000"
-                    android:textColor="#ffffff"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <Button
-                    android:id="@+id/addr"
-                    android:onClick="addReview"
-                    android:layout_marginTop="85dp"
-                    android:text="Rate/Add Review"
+                    android:text="Register my visit"
                     android:textSize="17dp"
                     android:background="#D50000"
                     android:textColor="#ffffff"

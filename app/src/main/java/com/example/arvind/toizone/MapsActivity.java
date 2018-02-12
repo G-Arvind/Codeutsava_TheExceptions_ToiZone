@@ -9,11 +9,14 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -68,6 +71,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.karan.churi.PermissionManager.PermissionManager;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.app.Fragment;
@@ -91,6 +96,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+
 
 
     //vars
@@ -119,8 +125,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String golat,golan,ptnameint;
     Double dgolat,dgolan;
     int count=0;
+    boolean connected = false;
 
     int i = 0;
+    PermissionManager permissionManager;
 
 
     private Boolean mLocationPermissionsGranted = false;
@@ -196,6 +204,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        permissionManager.checkResult(requestCode, permissions, grantResults);
+        Toast.makeText(getApplicationContext(), "Permissions updated please restart Application", Toast.LENGTH_LONG).show();
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
             Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
@@ -233,6 +243,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
+
+        permissionManager = new PermissionManager() {};
+        permissionManager.checkAndRequestPermissions(this);
+
+        checkcon();
+
+        if (connected==false)
+        {
+            View parentLayout = findViewById(android.R.id.content);
+            Snackbar.make(parentLayout, "No Internet Connection", Snackbar.LENGTH_LONG)
+                    .setAction("CLOSE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            checkcon();
+                        }
+                    })
+                    .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                    .show();
+        }
 
         if(count!=0) {
 
@@ -389,6 +418,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+
+
 
 
 
@@ -759,6 +790,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         polylines.clear();
 
+    }
+
+    public void checkcon(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
     }
 }
 

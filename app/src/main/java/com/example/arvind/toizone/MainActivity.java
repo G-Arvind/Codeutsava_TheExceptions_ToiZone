@@ -1,12 +1,17 @@
 package com.example.arvind.toizone;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,58 +42,89 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.google.zxing.qrcode.QRCodeReader;
+import com.karan.churi.PermissionManager.PermissionManager;
 import com.squareup.picasso.Picasso;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
 import at.markushi.ui.CircleButton;
 
+import static android.R.attr.data;
+
 public class MainActivity extends AppCompatActivity {
 
     private static int GALLERY_INTENT = 2;
 
     String link;
-    int j=0,sum=0;
+    int j = 0;
+    double ratt,sum;
 
     TextView ptname;
+    Button went;
     TextView phno;
     TextView facildisp;
     TextView ohdisp;
     TextView pricedisp;
     TextView addisp;
     TextView ratdisp;
-    TextView ratedisp,ratendisp;
+    TextView ratedisp, ratendisp;
     CircleButton complain;
-    String deviceid,phone,gone,spl;
+    String deviceid, phone, gone, spl;
     ImageView coverpic;
     BarChart barChart;
     CheckedTextView splfeatures;
-    String name,lat,lng;
+    String name, lat, lng,wentval;
     int count;
+    boolean connected = false;
+    int ratingcalculator;
+    ArrayList<String> rating = new ArrayList<String>(1);
+    ArrayList<Double> ratingdouble = new ArrayList<Double>(1);
 
-    private Firebase mref, mref1,mref2;
+    private Firebase mref, mref1, mref2;
     private StorageReference mstore;
     Map<String, String> map;
     Map<String, String> map1;
     Map<String, Integer> map2;
     Map<String, String> mapint;
-    ArrayList<Integer>arrayList=new ArrayList<Integer>(1);
-    int xmin,xmax,xnew;
+    ArrayList<Integer> arrayList = new ArrayList<Integer>(1);
+    int xmin, xmax, xnew;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Firebase.setAndroidContext(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkcon();
+        if (connected==false)
+        {
+            View parentLayout = findViewById(android.R.id.content);
+            Snackbar.make(parentLayout, "No Internet Connection", Snackbar.LENGTH_LONG)
+                    .setAction("CLOSE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            checkcon();
+                        }
+                    })
+                    .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
+                    .show();
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        link=getIntent().getExtras().getString("ptlink");
+        link = getIntent().getExtras().getString("ptlink");
         //link="Toilet 1";
+
+        final Activity activity = this;
 
         ptname = (TextView) findViewById(R.id.ptname);
         phno = (TextView) findViewById(R.id.phno);
@@ -97,11 +133,12 @@ public class MainActivity extends AppCompatActivity {
         pricedisp = (TextView) findViewById(R.id.pricedisp);
         addisp = (TextView) findViewById(R.id.addisp);
         ratdisp = (TextView) findViewById(R.id.ratdisp);
-       // ratendisp = (TextView) findViewById(R.id.ratendisp);
+        // ratendisp = (TextView) findViewById(R.id.ratendisp);
         complain = (CircleButton) findViewById(R.id.complain);
         coverpic = (ImageView) findViewById(R.id.coverpic);
-        barChart=(BarChart)findViewById(R.id.graph);
-        splfeatures=(CheckedTextView)findViewById(R.id.splfeatures);
+        barChart = (BarChart) findViewById(R.id.graph);
+        splfeatures = (CheckedTextView) findViewById(R.id.splfeatures);
+        went = (Button) findViewById(R.id.went);
 
         deviceid = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -110,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
 
-        mref = new Firebase("https://ptlocator.firebaseio.com/raipur/"+link+"/details");
-        mref1 = new Firebase("https://ptlocator.firebaseio.com/raipur/"+link+"/Reviews");
-        mref2 = new Firebase("https://ptlocator.firebaseio.com/raipur/"+link+"/peak");
+        mref = new Firebase("https://ptlocator.firebaseio.com/raipur/" + link + "/details");
+        mref1 = new Firebase("https://ptlocator.firebaseio.com/raipur/" + link + "/Reviews");
+        mref2 = new Firebase("https://ptlocator.firebaseio.com/raipur/" + link + "/peak");
         mstore = FirebaseStorage.getInstance().getReference();
 
 
@@ -127,16 +164,16 @@ public class MainActivity extends AppCompatActivity {
                 facildisp.setText(facil + "\n");
                 String oh = map.get("opening");
                 ohdisp.setText(oh);
-                 lat = map.get("lat");
-                 lng = map.get("lng");
-                 name = map.get("name");
+                lat = map.get("lat");
+                lng = map.get("lng");
+                name = map.get("name");
                 ptname.setText(name);
                 phone = map.get("phno");
                 phno.setText(phone);
                 String pri = map.get("price");
                 pricedisp.setText(pri);
                 String spl = map.get("add");
-                splfeatures.setText(spl);
+                splfeatures.setText("☑ "+spl);
                 String add = map.get("address");
                 addisp.setText(add);
                 progressDialog.dismiss();
@@ -149,50 +186,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final ArrayList<String> rating =new ArrayList<String>(1);
-        final ArrayList<Double>ratingdouble=new ArrayList<Double>(1);
 
-        /*
+
+
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        rootRef.child("raipur").child("toilet").child("reviews").addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+        rootRef.child("raipur").child(link).child("Reviews").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                 for(com.google.firebase.database.DataSnapshot d:dataSnapshot.getChildren())
                 {
                    rating.add(j,d.child("rating").getValue().toString());
-                    Log.v("TAG","INSIDEFOR:"+rating.get(j));
+                   // Log.v("TAG","INSIDEFOR:"+rating.get(j));
                     ratingdouble.add(j,Double.parseDouble(rating.get(j)));
+                    Log.v("TAG","INSIDEFOR:"+ratingdouble.get(j));
+                    sum+=ratingdouble.get(j);
                     j++;
                     count++;
+                    Log.v("TAG","INSIDEFORCOUNT:"+count);
                 }
+                setrating();
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
         });
-        for(int i=0;i<ratingdouble.size();i++)
+       /* for(int i=0;i<ratingdouble.size();i++)
         {
+            Log.v("TAG","CHECKINGVALUES"+ratingdouble.get(i));
             sum+=ratingdouble.get(i);
-        }
-        double ratt=sum/count;
-        if (ratt < 2.0) {
-            ratdisp.setBackgroundColor(Color.parseColor("#F01515"));
-            ratdisp.setTextColor(Color.parseColor("#FFFFFF"));
-            ratdisp.setText(ratt+"");
-        } else if (ratt > 2.0 && ratt < 4.0) {
-            ratdisp.setBackgroundColor(Color.parseColor("#FFF700"));
-            ratdisp.setTextColor(Color.parseColor("#FFFFFF"));
-            ratdisp.setText(ratt+"");
-        } else {
-            ratdisp.setBackgroundColor(Color.parseColor("#12F312"));
-            ratdisp.setTextColor(Color.parseColor("#FFFFFF"));
-            ratdisp.setText(ratt+"");
-        }
+        }*/
+
+
         progressDialog.dismiss();
 
-*/
+
 
 
 /*
@@ -252,6 +283,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 */
+        went.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IntentIntegrator intentIntegrator = new IntentIntegrator(activity);
+                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                intentIntegrator.setPrompt("scan");
+                intentIntegrator.setCameraId(0);
+                intentIntegrator.setBeepEnabled(false);
+                intentIntegrator.setBarcodeImageEnabled(false);
+                intentIntegrator.initiateScan();
+
+            }
+        });
+
+
+
+
+
+
 
 
 
@@ -367,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
+
         });
 
 
@@ -410,7 +461,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+
+
     }
+
+    public void setrating()
+    {
+        Log.v("TAG","TOTALSUMVALUEIS"+sum);
+        ratt=sum/count;
+
+        if (ratt <= 2.0) {
+            //ratdisp.setBackgroundColor(Color.parseColor("#F01515"));
+           // ratdisp.setTextColor(Color.parseColor("#000000"));
+            ratdisp.setTextColor(Color.parseColor("#F01515"));
+            ratdisp.setText("★"+new DecimalFormat("#.0").format(ratt)+"");
+        } else if (ratt > 2.0 && ratt < 4.0) {
+            //ratdisp.setBackgroundColor(Color.parseColor("#FFF700"));
+           // ratdisp.setTextColor(Color.parseColor("#000000"));
+            ratdisp.setTextColor(Color.parseColor("#FFC300"));
+            ratdisp.setText("★"+new DecimalFormat("#.0").format(ratt)+"");
+        } else {
+           // ratdisp.setBackgroundColor(Color.parseColor("#12F312"));
+            //ratdisp.setTextColor(Color.parseColor("#000000"));
+            ratdisp.setTextColor(Color.parseColor("#008000"));
+            ratdisp.setText("★"+new DecimalFormat("#.0").format(ratt)+"");
+        }
+    }
+
 
 
     public void sendcomplain(View view) {
@@ -499,9 +576,61 @@ public class MainActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                 }
             });
+
         }
+   //     else if (requestCode==0 && resultCode==RESULT_OK) {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                } else {
+                    wentval = result.getContents();
 
+                  //  Toast.makeText(getApplicationContext(),result.getContents(),Toast.LENGTH_SHORT).show();
 
+                    if(result.getContents().equals(link)) {
+
+                        mref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Integer> map2;
+                                map2 = dataSnapshot.getValue(Map.class);
+
+                                int temp = map2.get("went");
+                                // int itemp;
+                                temp++;
+                                Log.v("TAG", "MSGSISCNT:" + temp);
+                                // temp=Integer.parseInt(cnts);
+
+                                mref.child("went").setValue(temp);
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                        Toast.makeText(getApplication(),"Successfully Registered Your visit",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        Toast.makeText(getApplicationContext(),"Please select "+result.getContents()+" marker and update",Toast.LENGTH_LONG).show();
+
+                }
+            } else
+                super.onActivityResult(requestCode, resultCode, data);
+
+        //}
+
+    }
+    public void checkcon(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
     }
 
 }

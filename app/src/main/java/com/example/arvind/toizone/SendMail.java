@@ -18,9 +18,6 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-/**
- * Created by sujankumar on 30-01-2018.
- **/
 
 public class SendMail extends AsyncTask<Void,Void,Void> {
 
@@ -100,4 +97,6 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         }
         return null;
     }
+
+
 }

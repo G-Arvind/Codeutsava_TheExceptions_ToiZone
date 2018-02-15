@@ -117,104 +117,90 @@ public class Review extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialog progressDialog1=new ProgressDialog(Review.this);
-                progressDialog1.setMessage("Submitting review...");
-                progressDialog1.show();
-                float val=rb.getRating();
-                String vall=val+"";
-                String user=uname.getText().toString();
-                String revval=rev.getText().toString();
-                Firebase child=ref.child("name");
-                child.setValue(user);
-                Firebase child1=ref.child("rating");
-                child1.setValue(vall);
-                Firebase child2=ref.child("rev");
-                child2.setValue(revval);
-                Calendar cal=Calendar.getInstance();
-                SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
-                String dateval= sdf.format(new Date());
-                Firebase child3=ref.child("date");
-                child3.setValue(dateval);
-                if(time.equals("12AM-04AM"))
-                {
-                    //   cnt=countcalc("00");
-                    //++cnt;
-                    countcalc("00");
-                    //timeref.child("00").setValue(cnt);
-                }
-                else if(time.equals("04AM-06AM"))
-                {
-                    // cnt=countcalc("04");
-                    //++cnt;
-                    countcalc("04");
-                    //timeref.child("04").setValue(cnt);
-                }
-                else if(time.equals("06AM-07AM"))
-                {
-                    //   cnt=countcalc("06");
-                    //  ++cnt;
-                    countcalc("06");
-                    // timeref.child("06").setValue(cnt);
-                }
-                else if(time.equals("07AM-08AM"))
-                {
-                    // cnt=countcalc("07");
-                    //++cnt;
-                    //timeref.child("07").setValue(cnt);
-                    countcalc("07");
-                }
-                else if(time.equals("08AM-09AM"))
-                {
-                    //   cnt=countcalc("08");
-                    //++cnt;
-                    //timeref.child("08").setValue(cnt);
-                    countcalc("08");
-                }
-                else if(time.equals("09AM-10AM"))
-                {
-                    countcalc("09");
-                    Log.v("TAG","MSGSINFETCH:"+cnt);
-                    //   ++cnt;
-                    //Firebase tempref=timeref.child("09");
-                    //tempref.setValue(cnt);
-                    // timeref.child("09").setValue(cnt);
-                    // setvaltime();
-                }
-                else if(time.equals("10AM-02PM"))
-                {
-                    // cnt=countcalc("14");
-                    //++cnt;
-                    //timeref.child("14").setValue(cnt);
-                    countcalc("10");
-                }
-                else if(time.equals("02PM-06PM"))
-                {
-                    // cnt=countcalc("18");
-                    // ++cnt;
-                    // timeref.child("18").setValue(cnt);
-                    countcalc("14");
-                }
-                else if(time.equals("06PM-08PM"))
-                {
-                    // cnt=countcalc("20");
-                    //++cnt;
-                    //timeref.child("20").setValue(cnt);
-                    countcalc("18");
-                }
-                else if(time.equals("08PM-11PM"))
-                {
-                    //
-                    // cnt=countcalc("23");
-                    //++cnt;
-                    //timeref.child("23").setValue(cnt);
-                    countcalc("20");
-                }
-                else
-                    Toast.makeText(getApplicationContext(),"invalid",Toast.LENGTH_SHORT).show();
+                if (uname.getText().toString().length() == 0) {
+                    uname.setError("name is required");
+                } else if (rev.getText().toString().length() == 0) {
+                    rev.setError("review is required");
+                } else {
+                    final ProgressDialog progressDialog1 = new ProgressDialog(Review.this);
+                    progressDialog1.setMessage("Submitting review...");
+                    progressDialog1.show();
+                    float val = rb.getRating();
+                    String vall = val + "";
+                    String user = uname.getText().toString();
+                    String revval = rev.getText().toString();
+                    Firebase child = ref.child("name");
+                    child.setValue(user);
+                    Firebase child1 = ref.child("rating");
+                    child1.setValue(vall);
+                    Firebase child2 = ref.child("rev");
+                    child2.setValue(revval);
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    String dateval = sdf.format(new Date());
+                    Firebase child3 = ref.child("date");
+                    child3.setValue(dateval);
+                    if (time.equals("12AM-04AM")) {
+                        //   cnt=countcalc("00");
+                        //++cnt;
+                        countcalc("00");
+                        //timeref.child("00").setValue(cnt);
+                    } else if (time.equals("04AM-06AM")) {
+                        // cnt=countcalc("04");
+                        //++cnt;
+                        countcalc("04");
+                        //timeref.child("04").setValue(cnt);
+                    } else if (time.equals("06AM-07AM")) {
+                        //   cnt=countcalc("06");
+                        //  ++cnt;
+                        countcalc("06");
+                        // timeref.child("06").setValue(cnt);
+                    } else if (time.equals("07AM-08AM")) {
+                        // cnt=countcalc("07");
+                        //++cnt;
+                        //timeref.child("07").setValue(cnt);
+                        countcalc("07");
+                    } else if (time.equals("08AM-09AM")) {
+                        //   cnt=countcalc("08");
+                        //++cnt;
+                        //timeref.child("08").setValue(cnt);
+                        countcalc("08");
+                    } else if (time.equals("09AM-10AM")) {
+                        countcalc("09");
+                        Log.v("TAG", "MSGSINFETCH:" + cnt);
+                        //   ++cnt;
+                        //Firebase tempref=timeref.child("09");
+                        //tempref.setValue(cnt);
+                        // timeref.child("09").setValue(cnt);
+                        // setvaltime();
+                    } else if (time.equals("10AM-02PM")) {
+                        // cnt=countcalc("14");
+                        //++cnt;
+                        //timeref.child("14").setValue(cnt);
+                        countcalc("10");
+                    } else if (time.equals("02PM-06PM")) {
+                        // cnt=countcalc("18");
+                        // ++cnt;
+                        // timeref.child("18").setValue(cnt);
+                        countcalc("14");
+                    } else if (time.equals("06PM-08PM")) {
+                        // cnt=countcalc("20");
+                        //++cnt;
+                        //timeref.child("20").setValue(cnt);
+                        countcalc("18");
+                    } else if (time.equals("08PM-11PM")) {
+                        //
+                        // cnt=countcalc("23");
+                        //++cnt;
+                        //timeref.child("23").setValue(cnt);
+                        countcalc("20");
+                    } else
+                        Toast.makeText(getApplicationContext(), "invalid", Toast.LENGTH_SHORT).show();
 
-                progressDialog1.dismiss();
-                Toast.makeText(getApplicationContext(),"Thanks for your review",Toast.LENGTH_LONG).show();
+                    progressDialog1.dismiss();
+                    Toast.makeText(getApplicationContext(), "Thanks for your review", Toast.LENGTH_LONG).show();
 
+                }
             }
         });
 

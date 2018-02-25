@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -30,7 +32,7 @@ public class ImageDisplay extends AppCompatActivity {
     //private String[] images={"https://firebasestorage.googleapis.com/v0/b/ptlocator.appspot.com/o/userpics%2FToilet%201%2Fpt1.jpg?alt=media&token=d2db94e0-2d30-4f5c-bece-406e84a24a65",
     //   "https://firebasestorage.googleapis.com/v0/b/ptlocator.appspot.com/o/userpics%2FToilet%201%2Ffile5710?alt=media&token=b43e6b10-8ee3-4085-9c0d-1ce1314de0a9"};
     //private String[] images=new String[3];
-    private ArrayList<String>images=new ArrayList<String>(1);
+    private ArrayList<String>images=new ArrayList<String>();
 
     // private List<String> img;
     int i=0;
@@ -55,10 +57,12 @@ public class ImageDisplay extends AppCompatActivity {
                 String val = map.get("image");
                 //images.add(map.get("image"));
                 // Log.v("TAG","MSGIS:"+val);
-                images.add(val);
-                // images[i] = val;
-                Log.v("TAG", "MSGIS:" +images.get(i));
-                i++;
+                if(val!=null) {
+                    images.add(val);
+                    // images[i] = val;
+                    Log.v("TAG", "MSGIS:" + images.get(i));
+                    i++;
+                }
 
                 proceed();
             }
@@ -86,9 +90,15 @@ public class ImageDisplay extends AppCompatActivity {
     }
 
     void proceed() {
-        viewPager = (ViewPager) findViewById(R.id.vp);
-        adapter = new ViewPageAdapter(ImageDisplay.this, images);
-        viewPager.setAdapter(adapter);
+        if(images.size()<1)
+        {
+            Toast.makeText(getApplicationContext(),"Sorry No Photos found",Toast.LENGTH_LONG).show();
+        }
+        else {
+            viewPager = (ViewPager) findViewById(R.id.vp);
+            adapter = new ViewPageAdapter(ImageDisplay.this, images);
+            viewPager.setAdapter(adapter);
+        }
         progressDialog.dismiss();
     }
 

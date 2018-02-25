@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> rating = new ArrayList<String>(1);
     ArrayList<Double> ratingdouble = new ArrayList<Double>(1);
 
+    Toolbar toolbar;
+
     private Firebase mref, mref1, mref2;
     private StorageReference mstore;
     Map<String, String> map;
@@ -115,11 +117,11 @@ public class MainActivity extends AppCompatActivity {
                     .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                     .show();
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+         toolbar = (Toolbar) findViewById(R.id.toolbar);
+    //    setSupportActionBar(toolbar);
+     //   if (getSupportActionBar() != null) {
+      //      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // }
 
         link = getIntent().getExtras().getString("ptlink");
         //link="Toilet 1";
@@ -167,13 +169,20 @@ public class MainActivity extends AppCompatActivity {
                 lat = map.get("lat");
                 lng = map.get("lng");
                 name = map.get("name");
+                toolbar.setTitle(name);
+                setSupportActionBar(toolbar);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
                 ptname.setText(name);
                 phone = map.get("phno");
                 phno.setText(phone);
                 String pri = map.get("price");
                 pricedisp.setText(pri);
                 String spl = map.get("add");
-                splfeatures.setText("☑ "+spl);
+                if(spl!=null) {
+                    splfeatures.setText("☑ " + spl);
+                }
                 String add = map.get("address");
                 addisp.setText(add);
                 progressDialog.dismiss();
@@ -193,16 +202,17 @@ public class MainActivity extends AppCompatActivity {
         rootRef.child("raipur").child(link).child("Reviews").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-                for(com.google.firebase.database.DataSnapshot d:dataSnapshot.getChildren())
-                {
-                   rating.add(j,d.child("rating").getValue().toString());
-                   // Log.v("TAG","INSIDEFOR:"+rating.get(j));
-                    ratingdouble.add(j,Double.parseDouble(rating.get(j)));
-                    Log.v("TAG","INSIDEFOR:"+ratingdouble.get(j));
-                    sum+=ratingdouble.get(j);
-                    j++;
-                    count++;
-                    Log.v("TAG","INSIDEFORCOUNT:"+count);
+                for(com.google.firebase.database.DataSnapshot d:dataSnapshot.getChildren()) {
+                    if (d.child("rating").getValue() != null) {
+                        rating.add(j, d.child("rating").getValue().toString());
+                        // Log.v("TAG","INSIDEFOR:"+rating.get(j));
+                        ratingdouble.add(j, Double.parseDouble(rating.get(j)));
+                        Log.v("TAG", "INSIDEFOR:" + ratingdouble.get(j));
+                        sum += ratingdouble.get(j);
+                        j++;
+                        count++;
+                        Log.v("TAG", "INSIDEFORCOUNT:" + count);
+                    }
                 }
                 setrating();
             }

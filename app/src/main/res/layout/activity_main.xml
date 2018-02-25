@@ -344,7 +344,7 @@
                 <Button
                     android:id="@+id/addc"
                     android:onClick="sendcomplain"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="30dp"
                     android:text="Send Complain"
                     android:textSize="17dp"
                     android:background="#D50000"

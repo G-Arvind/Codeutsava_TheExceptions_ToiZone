@@ -1,6 +1,7 @@
 package com.example.arvind.toizone;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -32,6 +34,7 @@ public class ReviewDisplay extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private DatabaseReference myref;
+    Toolbar toolbar2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,9 @@ public class ReviewDisplay extends AppCompatActivity {
                     .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                     .show();
         }
+        toolbar2 = (Toolbar) findViewById(R.id.toolbar2);
+        toolbar2.setTitleTextColor(Color.WHITE);
+        toolbar2.setTitle("Reviews");
         link=getIntent().getExtras().getString("ptlink");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);

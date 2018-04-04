@@ -69,7 +69,8 @@ public class Review extends AppCompatActivity {
                     .show();
         }
         toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
-        toolbar1.setTitle("Review");
+        toolbar1.setTitleTextColor(Color.WHITE);
+        toolbar1.setTitle("Add Review");
         setSupportActionBar(toolbar1);
 
         link=getIntent().getExtras().getString("ptlink");

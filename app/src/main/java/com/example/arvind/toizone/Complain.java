@@ -1,11 +1,13 @@
 package com.example.arvind.toizone;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +20,7 @@ public class Complain extends AppCompatActivity  {
     private EditText mailaccount;
     private Button buttonSend;
     boolean connected = false;
+    Toolbar toolbar3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,10 @@ public class Complain extends AppCompatActivity  {
                     .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                     .show();
         }
+        toolbar3 = (Toolbar) findViewById(R.id.toolbar3);
+        toolbar3.setTitleTextColor(Color.WHITE);
+        toolbar3.setTitle("Complain");
+        setSupportActionBar(toolbar3);
 
 
         TextSubject = (EditText) findViewById(R.id.editTextSubject);

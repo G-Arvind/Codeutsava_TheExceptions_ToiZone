@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_review"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+
     tools:context="com.example.arvind.toizone.Review">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar1"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:title="title set by me"
+        app:layout_collapseMode="pin"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
 
     <LinearLayout
+        android:layout_marginTop="0dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,7 +53,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="470dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -74,22 +82,17 @@
     </LinearLayout>
 
     <TextView
+        android:layout_marginTop="70dp"
         android:textSize="15dp"
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select the time you visited"/>
-
-    <Spinner
-        android:layout_width="314dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/ts"
-        android:layout_alignTop="@+id/linearLayout"
-        android:layout_centerHorizontal="true" />
+        android:text="Select the time you visited"
+        android:id="@+id/textView" />
 
     <TextView
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="130dp"
         android:textSize="15dp"
         android:textStyle="bold"
         android:textColor="#000000"
@@ -102,9 +105,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rb"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="30dp"
         android:theme="@style/RatingBar"
         android:layout_below="@+id/ts"
+        android:layout_centerHorizontal="true" />
+
+    <Spinner
+        android:layout_marginTop="12dp"
+        android:layout_width="314dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ts"
+        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
 

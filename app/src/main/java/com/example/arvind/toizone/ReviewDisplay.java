@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ public class ReviewDisplay extends AppCompatActivity {
         toolbar2 = (Toolbar) findViewById(R.id.toolbar2);
         toolbar2.setTitleTextColor(Color.WHITE);
         toolbar2.setTitle("Reviews");
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         link=getIntent().getExtras().getString("ptlink");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -127,21 +129,37 @@ public class ReviewDisplay extends AppCompatActivity {
         }
         public void setName(String name)
         {
-            text.setText(name+"");
+            if(name!=null) {
+                text.setText(name + "");
+            }
+            else {
+                text.setText("N/A");
+            }
         }
         public void setRevi(String rev)
         {
+            if(rev!=null) {
             revi.setText(rev+"");
+            }
+            else {
+                revi.setText("N/A");
+            }
         }
         public void setDateval(String dateval)
         {
-            date11.setText(dateval+"");
+            if(dateval!=null) {
+            date11.setText(dateval+"");}
+            else {
+                date11.setText("N/A");
+            }
         }
         public void setStar(String rating)
         {
-            Float temp=Float.parseFloat(rating);
-            stardisp.setRating(temp);
-            stardisp.setEnabled(false);
+            if(rating!=null) {
+                Float temp = Float.parseFloat(rating);
+                stardisp.setRating(temp);
+                stardisp.setEnabled(false);
+            }
         }
 
     }
